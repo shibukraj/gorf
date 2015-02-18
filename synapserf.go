@@ -14,6 +14,18 @@ func printf_tb(x, y int, fg, bg termbox.Attribute, format string, args ...interf
 	print_tb(x, y, fg, bg, s)
 }
 
+func print_mainmenu() {
+	printf_tb(33, 4, termbox.ColorGreen|termbox.AttrBold, termbox.ColorDefault, "Main Menu")
+	printf_tb(20, 6, termbox.ColorGreen|termbox.AttrBold, termbox.ColorDefault, "(01)-Receiving")
+	printf_tb(20, 7, termbox.ColorGreen|termbox.AttrBold, termbox.ColorDefault, "(02)-Picking")
+	printf_tb(20, 8, termbox.ColorGreen|termbox.AttrBold, termbox.ColorDefault, "(03)-Shipping")
+	printf_tb(20, 9, termbox.ColorGreen|termbox.AttrBold, termbox.ColorDefault, "(04)-ASN Receiving")
+
+	printf_tb(15, 12, termbox.ColorGreen|termbox.AttrBold, termbox.ColorDefault, "Enter Selection : __")
+	//	termbox.SetCursor(33, 12)
+	//	termbox.SetInputMode(termbox.InputEsc)
+}
+
 func draw_container() {
 	termbox.SetCell(0, 0, 0x250C, termbox.ColorWhite, termbox.ColorBlack)
 	termbox.SetCell(79, 0, 0x2510, termbox.ColorWhite, termbox.ColorBlack)
@@ -43,6 +55,9 @@ func draw_container() {
 		termbox.SetCell(78, i, 0x2588, termbox.ColorBlue, termbox.ColorBlue)
 	}
 	printf_tb(33, 1, termbox.ColorMagenta|termbox.AttrBold, termbox.ColorBlack, "Synapse RF")
+
+	print_mainmenu()
+
 }
 
 func main() {
@@ -52,15 +67,37 @@ func main() {
 	}
 	defer termbox.Close()
 	draw_container()
+	var edit_box EditBox
+	draw_editbox(&edit_box, 33, 12, 10)
 	termbox.Flush()
 loop:
 	for {
+		var selectedValue string
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			switch ev.Key {
 			case termbox.KeyEsc:
 				break loop
+			case termbox.KeyArrowLeft, termbox.KeyCtrlB:
+				edit_box.MoveCursorOneRuneBackward()
+			case termbox.KeyBackspace, termbox.KeyBackspace2:
+				edit_box.DeleteRuneBackward()
+			case termbox.KeyEnter:
+				//var n := bytes.Index(byteArray, []byte{0})
+
+				selectedValue = string(edit_box.text[:])
+
+			default:
+				if ev.Ch != 0 {
+					// Insert the character to the position in the screen.
+					edit_box.InsertRune(ev.Ch)
+
+				}
 			}
+			edit_box.Draw(33, 12, 10, 1)
+			termbox.SetCursor(33+edit_box.CursorX(), 12)
+			printf_tb(33, 14, termbox.ColorMagenta|termbox.AttrBold, termbox.ColorBlack, selectedValue)
+			termbox.Flush()
 		}
 	}
 }

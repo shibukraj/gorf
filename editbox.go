@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/nsf/termbox-go"
 	"unicode/utf8"
+
+	"github.com/nsf/termbox-go"
 )
 
 func tbprint(x, y int, fg, bg termbox.Attribute, msg string) {
@@ -196,30 +197,44 @@ func (eb *EditBox) CursorX() int {
 	return eb.cursor_voffset - eb.line_voffset
 }
 
-var edit_box EditBox
+//var edit_box EditBox
 
-const edit_box_width = 30
+//const edit_box_width = 30
 
-func redraw_all() {
-	const coldef = termbox.ColorDefault
-	termbox.Clear(coldef, coldef)
-	w, h := termbox.Size()
-	midy := h / 2
-	midx := (w - edit_box_width) / 2
-	// unicode box drawing chars around the edit box
-	termbox.SetCell(midx-1, midy, '│', coldef, coldef)
-	termbox.SetCell(midx+edit_box_width, midy, '│', coldef, coldef)
-	termbox.SetCell(midx-1, midy-1, '┌', coldef, coldef)
-	termbox.SetCell(midx-1, midy+1, '└', coldef, coldef)
-	termbox.SetCell(midx+edit_box_width, midy-1, '┐', coldef, coldef)
-	termbox.SetCell(midx+edit_box_width, midy+1, '┘', coldef, coldef)
-	fill(midx, midy-1, edit_box_width, 1, termbox.Cell{Ch: '─'})
-	fill(midx, midy+1, edit_box_width, 1, termbox.Cell{Ch: '─'})
+//func redraw_all() {
+//	const coldef = termbox.ColorDefault
+//	termbox.Clear(coldef, coldef)
+//	w, h := termbox.Size()
+//	midy := h / 2
+//	midx := (w - edit_box_width) / 2
+//	// unicode box drawing chars around the edit box
+//	termbox.SetCell(midx-1, midy, '│', coldef, coldef)
+//	termbox.SetCell(midx+edit_box_width, midy, '│', coldef, coldef)
+//	termbox.SetCell(midx-1, midy-1, '┌', coldef, coldef)
+//	termbox.SetCell(midx-1, midy+1, '└', coldef, coldef)
+//	termbox.SetCell(midx+edit_box_width, midy-1, '┐', coldef, coldef)
+//	termbox.SetCell(midx+edit_box_width, midy+1, '┘', coldef, coldef)
+//	fill(midx, midy-1, edit_box_width, 1, termbox.Cell{Ch: '─'})
+//	fill(midx, midy+1, edit_box_width, 1, termbox.Cell{Ch: '─'})
 
-	edit_box.Draw(midx, midy, edit_box_width, 1)
-	termbox.SetCursor(midx+edit_box.CursorX(), midy)
-	tbprint(midx+6, midy+3, coldef, coldef, "Press ESC to quit")
-	termbox.Flush()
+//	edit_box.Draw(midx, midy, edit_box_width, 1)
+//	termbox.SetCursor(midx+edit_box.CursorX(), midy)
+//	tbprint(midx+6, midy+3, coldef, coldef, "Press ESC to quit")
+//	termbox.Flush()
+//}
+
+func draw_editbox(ebox *EditBox, xpos, ypos, width int) {
+	termbox.SetCell(xpos, ypos, '|', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(xpos+width, ypos, '|', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(xpos-1, ypos-1, '┌', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(xpos-1, ypos+1, '└', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(xpos+width, ypos-1, '┐', termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(xpos+width, ypos+1, '┘', termbox.ColorDefault, termbox.ColorDefault)
+	fill(xpos, ypos-1, width, 1, termbox.Cell{Ch: '─'})
+	fill(xpos, ypos+1, width, 1, termbox.Cell{Ch: '─'})
+	ebox.Draw(xpos, ypos, width, 1)
+	termbox.SetCursor(xpos+ebox.CursorX(), ypos)
+
 }
 
 //func main() {
