@@ -68,7 +68,7 @@ func main() {
 	defer termbox.Close()
 	draw_container()
 	var edit_box EditBox
-	draw_editbox(&edit_box, 33, 12, 10)
+	draw_editbox(33, 12, 20)
 	termbox.Flush()
 loop:
 	for {
@@ -83,18 +83,14 @@ loop:
 			case termbox.KeyBackspace, termbox.KeyBackspace2:
 				edit_box.DeleteRuneBackward()
 			case termbox.KeyEnter:
-				//var n := bytes.Index(byteArray, []byte{0})
-
 				selectedValue = string(edit_box.text[:])
-
 			default:
 				if ev.Ch != 0 {
 					// Insert the character to the position in the screen.
 					edit_box.InsertRune(ev.Ch)
-
 				}
 			}
-			edit_box.Draw(33, 12, 10, 1)
+			edit_box.Draw(33, 12, 20, 1)
 			termbox.SetCursor(33+edit_box.CursorX(), 12)
 			printf_tb(33, 14, termbox.ColorMagenta|termbox.AttrBold, termbox.ColorBlack, selectedValue)
 			termbox.Flush()

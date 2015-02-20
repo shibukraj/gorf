@@ -223,8 +223,9 @@ func (eb *EditBox) CursorX() int {
 //	termbox.Flush()
 //}
 
-func draw_editbox(ebox *EditBox, xpos, ypos, width int) {
-	termbox.SetCell(xpos, ypos, '|', termbox.ColorDefault, termbox.ColorDefault)
+func draw_editbox(xpos, ypos, width int) {
+
+	termbox.SetCell(xpos-1, ypos, '|', termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(xpos+width, ypos, '|', termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(xpos-1, ypos-1, '┌', termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(xpos-1, ypos+1, '└', termbox.ColorDefault, termbox.ColorDefault)
@@ -232,9 +233,6 @@ func draw_editbox(ebox *EditBox, xpos, ypos, width int) {
 	termbox.SetCell(xpos+width, ypos+1, '┘', termbox.ColorDefault, termbox.ColorDefault)
 	fill(xpos, ypos-1, width, 1, termbox.Cell{Ch: '─'})
 	fill(xpos, ypos+1, width, 1, termbox.Cell{Ch: '─'})
-	ebox.Draw(xpos, ypos, width, 1)
-	termbox.SetCursor(xpos+ebox.CursorX(), ypos)
-
 }
 
 //func main() {
